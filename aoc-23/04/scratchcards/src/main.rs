@@ -13,27 +13,27 @@ fn file_to_str(filename: &str) -> String {
 }
 
 fn calc_points(input: &str) -> i32 {
+    let mut total_score = 0;
     for line in input.lines() {
         let prefix_end = line.find(':').unwrap_or(0);
         let nums: Vec<&str> = line[(prefix_end+1)..].split('|').collect();
         let mut solutions = HashSet::new();
         solutions = nums[0].split(' ').collect();
         let mut sol_count = 0;
-        println!("values: {}", nums[1]);
         for val in nums[1].split(' ').into_iter() {
-            println!("Check val: {}", val);
+            // Dirty filtering, for sure could be done easier
+            if val.is_empty() || val == " " { continue; }
             if solutions.contains(val) {
-                sol_count+=1 ;
+                if sol_count == 0 { sol_count = 1; } else { sol_count *= 2; }
             }
         }
-        println!("Sol: {}", sol_count);
+        total_score += sol_count;
     }
-
-    3
+    total_score
 }
 
 fn main() {
     let input = file_to_str("./input.txt");
-    calc_points(&input);
-
+    let sol = calc_points(&input);
+    println!("Solution: {}", sol);
 }
